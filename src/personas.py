@@ -7,11 +7,24 @@ tools are; BACKEND_INSTRUCTIONS says how to use them. Backwards gives you a voic
 model narrating function calls it cannot make.
 """
 
+from datetime import UTC
+from datetime import datetime as _datetime
+
+# Neither model has a clock. Without this, "this Thursday" is unresolvable: a
+# simulated caller asking for one got back "I can't search the schedule without
+# the date. Please call back." Resolved at import, so it never goes stale.
+_NOW = _datetime.now(UTC).astimezone().date()
+_TODAY = f"{_NOW:%A, %B} {_NOW.day}, {_NOW.year}"
+
+
 # On Agent(instructions=...). Delegation policy only, no tool vocabulary. The
 # "say what you are checking" clause is load-bearing: without it the voice model
 # goes quiet during a delegated call, which on a phone line reads as a dropped
 # connection.
-VOICE_PERSONA = """You are the receptionist for Lakeshore Family Clinic.
+VOICE_PERSONA = f"""You are the receptionist for Lakeshore Family Clinic.
+
+Today is {_TODAY}. Work out which day the caller means before you act on it, and
+never ask them for a calendar date you could work out yourself.
 
 Speak the way a receptionist speaks: short sentences, one idea at a time, no lists.
 
@@ -26,7 +39,11 @@ If the caller interrupts you, stop and listen. Do not repeat what you already sa
 
 
 # On responses_options["instructions"]. This model has the tools.
-BACKEND_INSTRUCTIONS = """You are the backend for a clinic receptionist voice agent.
+BACKEND_INSTRUCTIONS = f"""You are the backend for a clinic receptionist voice agent.
+
+Today is {_TODAY}. Turn relative days like "this Thursday" or "tomorrow" into a real
+YYYY-MM-DD date yourself before you call a tool. Never give up on a request because
+a date was spoken in words.
 
 You handle work the voice model delegated to you. You are not talking to the caller.
 The voice model is on the line with them and will read your answer out loud.

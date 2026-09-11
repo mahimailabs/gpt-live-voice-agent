@@ -30,15 +30,11 @@ GPT-Live listens and speaks at the same time. It does not take turns. That one d
 
 | # | Rule that breaks | What this repo shows |
 |---|---|---|
-| 1 | You tune turn detection | The model owns the turn. `turn_detection` and endpointing options do nothing. A VAD is still needed for barge-in. |
+| 1 | You tune turn detection | The model owns the turn. `turn_detection` and endpointing options are discarded. A VAD is not required and cannot interrupt it: the model ends its own turn. |
 | 2 | You can interrupt the agent | Playback stops. The model keeps talking and cannot be truncated. |
 | 3 | One prompt, one model | Two models: a **voice model** with a persona, a **backend model** with the tools. The voice model never sees your tools. |
 | 4 | `say()` reads a script | `say()` raises. No text-only mode, no half-cascade. Exact read-backs are not guaranteed. |
 | 5 | You edit the chat context | Append-only after start. Three channels instead: `thinking`, `commentary`, `instructions`. |
-
-<p align="center">
-  <img src="docs/talker-thinker.gif" alt="The voice model keeps talking while the backend model calls tools" width="100%">
-</p>
 
 The part that is new: **delegation is non-blocking.** The voice model keeps the conversation going while the backend model reasons and calls your tools. The talker is never busy. The thinker is never on the line.
 
@@ -94,6 +90,11 @@ Run the three simulated callers (rushed parent, delegated booking, mid-call resc
 ```bash
 make simulate
 ```
+
+Enable agent observability on the LiveKit project first. Without it the scenarios
+still run, but `agent_expectations` are never evaluated and the run ends with
+`can't summarize: user data recording (observability) is disabled`, which reads
+like a pass.
 
 ---
 

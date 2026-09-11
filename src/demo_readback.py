@@ -32,13 +32,22 @@ RUNS = 5
 _DATE, _TIME = "2026-09-18", "2:30 PM"
 BOOKED = f"Booked for {_DATE} at {_TIME}. Reference {_reference(_DATE, _TIME)}."
 
+# Four turns, not one. The agent will not book until it has read the date and time
+# back and heard a confirmation, so a single "book it" never reaches a reference.
+BOOKING_TURNS = [
+    "I'd like to book Friday the eighteenth at two thirty. I'm a returning patient.",
+    "Yes, that is right. Go ahead and book it.",
+    "Yes, I confirm. Book it.",
+]
+
 
 async def ask_for_the_reference(llm: inference.LLM) -> str:
     async with AgentSession(llm=llm) as session:
         await session.start(Reception())
         with mock_tools(Reception, {"book_appointment": lambda: BOOKED}):
-            await session.run(user_input="Book me Friday the eighteenth at two thirty, go ahead.")
-            result = await session.run(user_input="Sorry, what was that reference number?")
+            for turn in BOOKING_TURNS:
+                await session.run(user_input=turn)
+            result = await session.run(user_input="Sorry, what was that reference number again?")
 
     for event in reversed(result.events):
         if event.type == "message" and event.item.role == "assistant":
