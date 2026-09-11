@@ -20,7 +20,7 @@
 
 Run both. Interrupt both. Ask both for an exact reference number. You will have an opinion in ten minutes.
 
-This repo is the code behind the article *[I Put My Clinic Agent on GPT-Live. Five Rules Broke.](https://x.com/voicexprt)* and the starting point for the clinic agent in the [Voice Agents Mastery](https://x.com/voicexprt) series.
+This repo is the code behind the article *[GPT-Live on LiveKit: Five Voice Agent Rules That Just Broke](https://medium.com/voice-ai-mastery/gpt-live-on-livekit-i-was-not-ready-for-this-5eab64d95988?sk=38988d5eff08b9773f9848a7133967a7)* and the starting point for the clinic agent in the [Voice Agents Mastery](https://medium.com/voice-ai-mastery) series.
 
 ---
 
@@ -136,7 +136,7 @@ GPT-Live is priced per minute of session for the voice model, plus tokens for th
 
 - [LiveKit GPT-Live plugin guide](https://docs.livekit.io/agents/models/realtime/plugins/gpt-live)
 - [LiveKit pipeline types: cascade vs realtime vs half-cascade](https://docs.livekit.io/agents/models/pipelines)
-- [Voice Agents Handbook](https://handbook.mahimai.ca) — nine chapters on production voice agents with LiveKit
+- [Voice Agents Handbook](https://handbook.mahimai.ca) — complete handbook for production voice agents with LiveKit
 
 ---
 
