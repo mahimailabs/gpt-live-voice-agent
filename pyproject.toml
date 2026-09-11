@@ -1,0 +1,21 @@
+[project]
+name = "gpt-live-voice-agent"
+version = "0.1.0"
+description = "GPT-Live full-duplex voice agent on LiveKit, next to the same agent as an STT-LLM-TTS cascade."
+requires-python = ">=3.11"
+dependencies = [
+    "livekit-agents[openai,silero]~=1.8",
+    "python-dotenv",
+    "pytest",
+    "pytest-asyncio",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100

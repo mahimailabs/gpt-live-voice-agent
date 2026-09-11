@@ -1,0 +1,52 @@
+# Simulated callers for the GPT-Live receptionist. Run with:
+#   lk agent simulate --scenarios scenarios.yaml --audio src/agent_gptlive.py
+# --audio matters here: simulations are text-only by default, and scenario 1 is
+# about barge-in, which text mode cannot produce. Point it at src/agent_cascade.py
+# to run the same three callers against the cascade and compare.
+name: Lakeshore clinic reception
+
+scenarios:
+  - label: rushed parent interrupts once
+    instructions: >
+      You are a parent calling from a noisy kitchen with a sick child. You are in a
+      hurry and you speak fast. Ask whether the clinic can see your daughter this
+      week. Exactly once, while the receptionist is still mid-sentence, cut in with
+      "sorry, how early can you do Thursday?" and keep talking over the first two or
+      three words of whatever they are saying. After that, let them finish. Do not
+      book anything.
+    agent_expectations: >
+      The agent handles the interruption without losing the thread: it does not
+      restart its previous sentence from the beginning, does not repeat the part you
+      already heard, and answers the Thursday question with real times rather than a
+      guess.
+    tags:
+      rule: barge-in
+
+  - label: delegated booking Thursday after 3pm
+    instructions: >
+      You are a returning patient. Ask what is open on Thursday the seventeenth of
+      September, 2026, after three in the afternoon. Accept the first time offered
+      that is after 3 PM. When the receptionist reads the date and time back to you,
+      confirm it. Before you hang up, ask for your reference number.
+    agent_expectations: >
+      The agent says out loud that it is checking before it goes quiet, offers only
+      times that actually exist for that Thursday, reads the date and time back
+      before it books, and ends with a four-digit reference number it was given
+      rather than one it made up.
+    tags:
+      rule: delegation
+
+  - label: books Thursday then switches to Friday
+    instructions: >
+      You are a returning patient. Book the 3:15 PM slot on Thursday the seventeenth
+      of September, 2026, and confirm it when it is read back to you. Then, straight
+      after, say you got the day wrong and you need Friday the eighteenth instead,
+      early afternoon. Accept whichever Friday time is offered and confirm that one
+      too.
+    agent_expectations: >
+      The agent books Thursday, then checks Friday availability again instead of
+      reusing the Thursday times, reads the new date and time back before booking,
+      and finishes with one correct Friday booking and its own reference number. It
+      does not reuse the Thursday reference number for the Friday appointment.
+    tags:
+      rule: append-only-context
